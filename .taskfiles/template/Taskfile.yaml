@@ -122,11 +122,11 @@ tasks:
 
   debug:
     desc: Gather common resources in your cluster
+    vars:
+      resources: certificates certificaterequests gitrepositories helmrepositories helmreleases httproutes kustomizations nodes pods
     cmds:
-      - for:
-          matrix:
-            RESOURCE: [certificates, certificaterequests, gitrepositories, helmrepositories, helmreleases, httproutes, kustomizations, nodes, pods]
-        cmd: kubectl get --all-namespaces {{.ITEM.RESOURCE}}
+      - loop: '{{.resources | split " "}}'
+        cmd: kubectl get --all-namespaces {{.ITEM}}
     preconditions:
       - test -f {{.KUBECONFIG}}
       - which kubectl
